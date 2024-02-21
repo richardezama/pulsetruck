@@ -1,0 +1,303 @@
+@extends('backend.layouts.app')
+@section('content')
+<div class="card">
+    <form class="" action="" id="sort_orders" method="GET">
+        <div class="card-header row gutters-5">
+            <div class="col">
+                <h5 class="mb-md-0 h6">{{ translate('All Orders') }}</h5>
+            </div>
+
+            <div class="dropdown mb-2 mb-md-0" style="display:none;">
+                <button class="btn border dropdown-toggle" type="button" data-toggle="dropdown">
+                    {{translate('Bulk Action')}}
+                </button>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a class="dropdown-item" href="#" onclick="bulk_delete()"> {{translate('Delete selection')}}</a>
+<!--                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#exampleModal">
+                        <i class="las la-sync-alt"></i>
+                        {{translate('Change Order Status')}}
+                    </a>-->
+                </div>
+            </div>
+
+            <!-- Change Status Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">
+                                {{translate('Choose an order status')}}
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <select class="form-control aiz-selectpicker" onchange="change_status()" data-minimum-results-for-search="Infinity" id="update_delivery_status">
+                                <option value="pending">{{translate('Pending')}}</option>
+                                <option value="confirmed">{{translate('Confirmed')}}</option>
+                                <option value="picked_up">{{translate('Picked Up')}}</option>
+                                <option value="on_the_way">{{translate('On The Way')}}</option>
+                                <option value="delivered">{{translate('Delivered')}}</option>
+                                <option value="cancelled">{{translate('Cancel')}}</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-2 ml-auto">
+                <select class="form-control aiz-selectpicker" name="seller_id" id="route_id">
+                    
+                    <option value="">{{translate('Filter by Sellers')}}</option>
+                    @foreach ($sellers as $rt)
+                                  @if($seller==$rt->id)
+                                   <option selected value="{{$rt->id}}">{{ $rt->name }}</option>
+                                  @else
+                                <option value="{{$rt->id}}">{{ $rt->name }}</option>
+                                @endif
+                                     
+                                @endforeach   
+                </select>
+            </div>
+
+            <div class="col-lg-2 ml-auto">
+                <select class="form-control aiz-selectpicker" name="route_id" id="route_id">
+                    
+                    <option value="">{{translate('Filter by Routes')}}</option>
+                    @foreach ($routes as $rt)
+                                  @if($route==$rt->id)
+                                   <option selected value="{{$rt->id}}">{{ $rt->name }}</option>
+                                  @else
+                                <option value="{{$rt->id}}">{{ $rt->name }}</option>
+                                @endif
+                                     
+                                @endforeach   
+                </select>
+            </div>
+
+            <div class="col-lg-2 ml-auto">
+                <select class="form-control aiz-selectpicker" name="paid" id="payment_status">
+                    <option value="">{{translate('Filter by Payment Status')}}</option>
+                    <option value="paid" @if ($payment_status == 'paid') selected @endif>{{translate('Paid')}}</option>
+                    <option value="unpaid" @if ($payment_status == 'unpaid') selected @endif>{{translate('Un-Paid')}}</option>
+                     </select>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group mb-0">
+                    <input type="text" class="aiz-date-range form-control" value="{{ $date }}" name="date" placeholder="{{ translate('Filter by date') }}" data-format="DD-MM-Y" data-separator=" to " data-advanced-range="true" autocomplete="off">
+                </div>
+            </div>
+            <div class="col-lg-2">
+                <div class="form-group mb-0">
+                    <input type="text" class="form-control" id="search" name="search"@isset($sort_search) value="{{ $sort_search }}" @endisset placeholder="{{ translate('Type Order code & hit Enter') }}">
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="form-group mb-0">
+                    <button type="submit" class="btn btn-primary">{{ translate('Filter') }}</button>
+                </div>
+            </div>
+             <div class="col-auto">
+                <div class="form-group mb-0">
+                    <button type="submit" name="export" value="export" class="btn btn-success">{{ translate('Export') }}</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+             <h4>Money Collected Today  {{number_format($todaytotal)}} Ugx</h4>
+             <h4>Unpaid Sales  {{$unpaid}}</h4>
+              <h4>Paid Sales  {{$paid}}</h4>
+                 <h4>Debt  {{number_format($debt)}} Ugx</h4>
+                   <h4>Total Amount Received  {{number_format($totalpaid)}} Ugx</h4>
+           
+            <table class="table aiz-table mb-0">
+                <thead>
+                    <tr>
+                        <!--<th>#</th>-->
+                        <th>
+                            <div class="form-group">
+                                <div class="aiz-checkbox-inline">
+                                    <label class="aiz-checkbox">
+                                        <input type="checkbox" class="check-all">
+                                        <span class="aiz-square-check"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </th>
+                        <th>{{ translate('Order Date') }}</th>
+                        <th data-breakpoints="md">{{ translate('Num. of Products') }}</th>
+                        <th data-breakpoints="md">{{ translate('Customer') }}</th>
+                          <th data-breakpoints="md">{{ translate('Phone') }}</th>
+                        <th data-breakpoints="md">{{ translate('Route') }}</th>
+                        <th data-breakpoints="md">{{ translate('Amount') }}</th>
+                        <th data-breakpoints="md">{{ translate('Paid') }}</th>
+                        
+                        <th data-breakpoints="md">{{ translate('Balance') }}</th>
+                        
+                        <th data-breakpoints="md">{{ translate('Payment Status') }}</th>
+                        @if (addon_is_activated('refund_request'))
+                        <th>{{ translate('Refund') }}</th>
+                        @endif
+                        <th class="text-right" width="15%">{{translate('options')}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($orders as $key => $order)
+                    <tr>
+    <!--                    <td>
+                            {{ ($key+1) + ($orders->currentPage() - 1)*$orders->perPage() }}
+                        </td>-->
+                        <td>
+                            <div class="form-group">
+                                <div class="aiz-checkbox-inline">
+                                    <label class="aiz-checkbox">
+                                        <input type="checkbox" class="check-one" name="id[]" value="{{$order->id}}">
+                                        <span class="aiz-square-check"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            {{ $order->created_at }}
+                        </td>
+                        <td>
+                            {{ count($order->orderDetails) }}
+                        </td>
+                        <td>
+                            @if ($order->user != null)
+                            {{ $order->user->name }}
+                            @else
+                            Guest ({{ $order->guest_id }})
+                            @endif
+                        </td>
+                         <td>
+                            {{ $order->phone}}
+                        </td>
+                        <td>
+                           @if(isset($order->road->name))
+                            {{ json_encode($order->road->name) }}
+                            @else
+                            
+                            @endif
+                          
+                        </td>
+                        <td>
+                            {{ single_price($order->grand_total) }}
+                        </td>
+                         <td>
+                            {{ single_price($order->amount_paid) }}
+                        </td>
+
+                        <td>
+                            {{ single_price($order->grand_total-$order->amount_paid) }}
+                        </td>
+                       
+                        <td>
+                            @if ($order->payment_status == 'paid')
+                            <span class="badge badge-inline badge-success">{{translate('Paid')}}</span>
+                            @else
+                            <span class="badge badge-inline badge-danger">{{translate('Unpaid')}}</span>
+                            @endif
+                        </td>
+                        @if (addon_is_activated('refund_request'))
+                        <td>
+                            @if (count($order->refund_requests) > 0)
+                            {{ count($order->refund_requests) }} {{ translate('Refund') }}
+                            @else
+                            {{ translate('No Refund') }}
+                            @endif
+                        </td>
+                        @endif
+                        <td class="text-right">
+                            <a class="btn btn-soft-primary btn-icon btn-circle btn-sm" href="{{route('all_orders.show', encrypt($order->id))}}" title="{{ translate('View') }}">
+                                <i class="las la-eye"></i>
+                            </a>
+                            <a class="btn btn-soft-info btn-icon btn-circle btn-sm" href="{{ route('invoice.download', $order->id) }}" title="{{ translate('Download Invoice') }}">
+                                <i class="las la-download"></i>
+                            </a>
+                            <a href="#" class="btn btn-soft-danger btn-icon btn-circle btn-sm confirm-delete" data-href="{{route('orders.destroy', $order->id)}}" title="{{ translate('Delete') }}">
+                                <i class="las la-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+            <div class="aiz-pagination">
+                {{ $orders->appends(request()->input())->links() }}
+            </div>
+
+        </div>
+    </form>
+</div>
+
+@endsection
+
+@section('modal')
+    @include('modals.delete_modal')
+@endsection
+
+@section('script')
+    <script type="text/javascript">
+        $(document).on("change", ".check-all", function() {
+            if(this.checked) {
+                // Iterate each checkbox
+                $('.check-one:checkbox').each(function() {
+                    this.checked = true;
+                });
+            } else {
+                $('.check-one:checkbox').each(function() {
+                    this.checked = false;
+                });
+            }
+
+        });
+
+//        function change_status() {
+//            var data = new FormData($('#order_form')[0]);
+//            $.ajax({
+//                headers: {
+//                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+//                },
+//                url: "{{route('bulk-order-status')}}",
+//                type: 'POST',
+//                data: data,
+//                cache: false,
+//                contentType: false,
+//                processData: false,
+//                success: function (response) {
+//                    if(response == 1) {
+//                        location.reload();
+//                    }
+//                }
+//            });
+//        }
+
+        function bulk_delete() {
+            var data = new FormData($('#sort_orders')[0]);
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{route('bulk-order-delete')}}",
+                type: 'POST',
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if(response == 1) {
+                        location.reload();
+                    }
+                }
+            });
+        }
+    </script>
+@endsection
