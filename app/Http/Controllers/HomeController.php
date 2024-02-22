@@ -333,6 +333,35 @@ class HomeController extends Controller
         return view('frontend.user.seller.product_upload', compact('categories'));
     }
 
+
+    
+
+    public function show_car_upload_form(Request $request)
+    {
+        $seller = Auth::user()->seller;
+        if(addon_is_activated('seller_subscription')){
+            if($seller->seller_package && $seller->seller_package->product_upload_limit > $seller->user->products()->count()){
+                $categories = Category::where('parent_id', 0)
+                    ->where('digital', 0)
+                    ->with('childrenCategories')
+                    ->get();
+                return view('frontend.user.seller.product_upload', compact('categories'));
+            }
+            else {
+                flash(translate('Upload limit has been reached. Please upgrade your package.'))->warning();
+                return back();
+            }
+        }
+           $categories = Category::where('parent_id', 0)
+            ->where('digital', 0)
+            ->with('childrenCategories')
+            ->get();
+
+
+            //types models etc
+        return view('frontend.user.seller.car_upload', compact('categories'));
+    }
+
     public function show_product_edit_form(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -696,5 +725,19 @@ class HomeController extends Controller
     public function inhouse_products(Request $request) {
         $products = filter_products(Product::where('added_by', 'admin'))->with('taxes')->paginate(12)->appends(request()->query());
         return view('frontend.inhouse_products', compact('products'));
+    }
+
+
+
+    public function cars(Request $request)
+    {
+        $search = null;
+        $products = Product::where('user_id', Auth::user()->id)->where('digital', 0)->orderBy('created_at', 'desc');
+        if ($request->has('search')) {
+            $search = $request->search;
+            $products = $products->where('name', 'like', '%'.$search.'%');
+        }
+        $products = $products->paginate(10);
+        return view('frontend.user.seller.cars', compact('products', 'search'));
     }
 }

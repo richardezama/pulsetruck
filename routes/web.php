@@ -219,6 +219,28 @@ Route::group(['middleware' => ['user', 'verified', 'unbanned']], function() {
 Route::get('/customer_products/destroy/{id}', 'CustomerProductController@destroy')->name('customer_products.destroy');
 
 Route::group(['prefix' => 'seller', 'middleware' => ['seller', 'verified', 'user']], function() {
+
+
+    //my cars
+    Route::get('/cars', 'HomeController@cars')->name('cars.index');
+    Route::get('/cars/upload', 'HomeController@show_car_upload_form')->name('seller.cars.upload');
+  //  Route::get('/product/{id}/edit', 'HomeController@show_product_edit_form')->name('seller.products.edit');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     Route::get('/products', 'HomeController@seller_product_list')->name('seller.products');
     Route::get('/product/upload', 'HomeController@show_product_upload_form')->name('seller.products.upload');
     Route::get('/product/{id}/edit', 'HomeController@show_product_edit_form')->name('seller.products.edit');

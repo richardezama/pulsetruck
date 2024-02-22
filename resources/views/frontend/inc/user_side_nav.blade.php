@@ -142,7 +142,9 @@
 
                     @if(Auth::user()->user_type == 'seller')
                         <li class="aiz-side-nav-item">
-                            <a href="{{ route('seller.products') }}" class="aiz-side-nav-link {{ areActiveRoutes(['seller.products', 'seller.products.upload', 'seller.products.edit'])}}">
+                            <a href="{{ route('cars.index') }}"
+                             class="aiz-side-nav-link
+                             {{ areActiveRoutes(['cars.index'])}}">
                                 <i class="lab la-sketch aiz-side-nav-icon"></i>
                                 <span class="aiz-side-nav-text">{{ translate('My Cars') }}</span>
                             </a>
