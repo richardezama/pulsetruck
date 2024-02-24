@@ -222,11 +222,19 @@ Route::group(['prefix' => 'seller', 'middleware' => ['seller', 'verified', 'user
 
 
     //my cars
-    Route::get('/cars', 'HomeController@cars')->name('cars.index');
+    Route::get('/cars', 'FleetController@cars')->name('cars.index');
     Route::get('/cars/upload', 'HomeController@show_car_upload_form')->name('seller.cars.upload');
   //  Route::get('/product/{id}/edit', 'HomeController@show_product_edit_form')->name('seller.products.edit');
+  Route::post('/cars/save', 'FleetController@store')->name('fleet.store');
+
+  Route::get('/car/destroy/{id}', 'FleetController@destroy')->name('car.delete');
 
 
+  //drivers
+  Route::resource('drivers', 'DriversController');
+  Route::get('/drivers/destroy/{id}', 'DriversController@destroy')->name('driver.destroy');
+
+   
 
 
 

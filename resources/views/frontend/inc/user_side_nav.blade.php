@@ -149,6 +149,15 @@
                                 <span class="aiz-side-nav-text">{{ translate('My Cars') }}</span>
                             </a>
                         </li>
+
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('drivers.index') }}"
+                             class="aiz-side-nav-link
+                             {{ areActiveRoutes(['drivers.index'])}}">
+                                <i class="lab la-sketch aiz-side-nav-icon"></i>
+                                <span class="aiz-side-nav-text">{{ translate('My Drivers') }}</span>
+                            </a>
+                        </li>
                         <!--
                         <li class="aiz-side-nav-item">
                             <a href="{{route('product_bulk_upload.index')}}" class="aiz-side-nav-link {{ areActiveRoutes(['product_bulk_upload.index'])}}">
@@ -179,62 +188,15 @@
                                 <span class="aiz-side-nav-text">{{ translate('Uploaded Files') }}</span>
                             </a>
                         </li>
-                        <!--
-                        <li class="aiz-side-nav-item">
-                            <a href="{{ route('seller.coupon.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['my_uploads.new'])}}">
-                                <i class="las la-bullhorn aiz-side-nav-icon"></i>
-                                <span class="aiz-side-nav-text">{{ translate('Coupon') }}</span>
-                            </a>
-                        </li>
-                    -->
+
                     @endif
+
+
+
+
+
 
                     <!--
-                    @if(get_setting('classified_product') == 1)
-                        <li class="aiz-side-nav-item">
-                            <a href="{{ route('customer_products.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['customer_products.index', 'customer_products.create', 'customer_products.edit'])}}">
-                                <i class="lab la-sketch aiz-side-nav-icon"></i>
-                                <span class="aiz-side-nav-text">{{ translate('Classified Products') }}</span>
-                            </a>
-                        </li>
-                    @endif
-
-
-                    @if(addon_is_activated('auction'))
-                        <li class="aiz-side-nav-item">
-                            <a href="javascript:void(0);" class="aiz-side-nav-link">
-                                <i class="las la-gavel aiz-side-nav-icon"></i>
-                                <span class="aiz-side-nav-text">{{ translate('Auction') }}</span>
-                                <span class="aiz-side-nav-arrow"></span>
-                            </a>
-                            <ul class="aiz-side-nav-list level-2">
-                                @if (Auth::user()->user_type == 'seller' && get_setting('seller_auction_product') == 1)
-                                    <li class="aiz-side-nav-item">
-                                        <a href="{{ route('auction_products.seller.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['auction_products.seller.index','auction_product_create.seller','auction_product_edit.seller','product_bids.seller'])}}">
-                                            <span class="aiz-side-nav-text">{{ translate('All Auction Products') }}</span>
-                                        </a>
-                                    </li>
-                                    <li class="aiz-side-nav-item">
-                                        <a href="{{ route('auction_products_orders.seller') }}" class="aiz-side-nav-link {{ areActiveRoutes(['auction_products_orders.seller'])}}">
-                                            <span class="aiz-side-nav-text">{{ translate('Auction Product Orders') }}</span>
-                                        </a>
-                                    </li>
-                                @endif
-                                <li class="aiz-side-nav-item">
-                                    <a href="{{ route('auction_product_bids.index') }}" class="aiz-side-nav-link">
-                                        <span class="aiz-side-nav-text">{{ translate('Bidded Products') }}</span>
-                                    </a>
-                                </li>
-                                <li class="aiz-side-nav-item">
-                                    <a href="{{ route('auction_product.purchase_history') }}" class="aiz-side-nav-link">
-                                        <span class="aiz-side-nav-text">{{ translate('Purchase History') }}</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    @endif
-
-
                     @if(Auth::user()->user_type == 'seller')
                         @if (addon_is_activated('pos_system'))
                             @if (\App\Models\BusinessSetting::where('type', 'pos_activation_for_seller')->first() != null && get_setting('pos_activation_for_seller') != 0)
@@ -246,7 +208,8 @@
                                 </li>
                             @endif
                         @endif
-                         -->
+                            -->
+
                         <li class="aiz-side-nav-item">
                             <a href="{{ route('orders.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['orders.index'])}}">
                                 <i class="las la-money-bill aiz-side-nav-icon"></i>
@@ -318,17 +281,16 @@
                         </li>
                     @endif
 
-  <!--
-                    @if (get_setting('wallet_system') == 1)
+
                         <li class="aiz-side-nav-item">
                             <a href="{{ route('wallet.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['wallet.index'])}}">
                                 <i class="las la-dollar-sign aiz-side-nav-icon"></i>
                                 <span class="aiz-side-nav-text">{{translate('My Wallet')}}</span>
                             </a>
                         </li>
-                    @endif
 
 
+                        <!--
                     @if (addon_is_activated('club_point'))
                         <li class="aiz-side-nav-item">
                             <a href="{{ route('earnng_point_for_user') }}" class="aiz-side-nav-link {{ areActiveRoutes(['earnng_point_for_user'])}}">

@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Models\Seller;
 use App\Models\Shop;
 use App\Models\Order;
+use App\Models\Types;
 use App\Models\BusinessSetting;
 use App\Models\Coupon;
 use Cookie;
@@ -356,10 +357,13 @@ class HomeController extends Controller
             ->where('digital', 0)
             ->with('childrenCategories')
             ->get();
+            $types = Types::orderby('name', "asc")
+        
+            ->get();
 
 
             //types models etc
-        return view('frontend.user.seller.car_upload', compact('categories'));
+        return view('frontend.user.seller.car_upload', compact('categories','types'));
     }
 
     public function show_product_edit_form(Request $request, $id)
@@ -729,15 +733,4 @@ class HomeController extends Controller
 
 
 
-    public function cars(Request $request)
-    {
-        $search = null;
-        $products = Product::where('user_id', Auth::user()->id)->where('digital', 0)->orderBy('created_at', 'desc');
-        if ($request->has('search')) {
-            $search = $request->search;
-            $products = $products->where('name', 'like', '%'.$search.'%');
-        }
-        $products = $products->paginate(10);
-        return view('frontend.user.seller.cars', compact('products', 'search'));
-    }
 }

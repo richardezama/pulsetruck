@@ -131,7 +131,7 @@
               <div class="card-header">
                   <h6 class="mb-0">{{ translate('Cars') }}</h6>
               </div>
-    		          <div class="card-body">
+    		<div class="card-body">
                 <table class="table aiz-table mb-0">
                   <thead>
                       <tr>

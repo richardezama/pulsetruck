@@ -1,7 +1,5 @@
 @extends('frontend.layouts.user_panel')
-
 @section('panel_content')
-
     <div class="aiz-titlebar mt-2 mb-4">
       <div class="row align-items-center">
         <div class="col-md-6">
@@ -58,7 +56,7 @@
     <div class="card">
         <div class="card-header row gutters-5">
             <div class="col">
-                <h5 class="mb-md-0 h6">{{ translate('All Products') }}</h5>
+                <h5 class="mb-md-0 h6">{{ translate('All Cars') }}</h5>
             </div>
             <div class="col-md-3">
                 <div class="input-group input-group-sm">
@@ -75,72 +73,60 @@
                         <th>#</th>
                         <th width="30%">{{ translate('Name')}}</th>
                         <th data-breakpoints="md">{{ translate('Category')}}</th>
-                        <th data-breakpoints="md">{{ translate('Current Qty')}}</th>
-                        <th>{{ translate('Base Price')}}</th>
-                        @if(get_setting('product_approve_by_admin') == 1)
-                            <th data-breakpoints="md">{{ translate('Approval')}}</th>
-                        @endif
-                        <th data-breakpoints="md">{{ translate('Published')}}</th>
-                        <th data-breakpoints="md">{{ translate('Featured')}}</th>
+                        <th data-breakpoints="md">{{ translate('Type')}}</th>
+                        <th data-breakpoints="md">{{ translate('Make')}}</th>
                         <th data-breakpoints="md" class="text-right">{{ translate('Options')}}</th>
                     </tr>
                 </thead>
-
                 <tbody>
                     @foreach ($products as $key => $product)
                         <tr>
                             <td>{{ ($key+1) + ($products->currentPage() - 1)*$products->perPage() }}</td>
                             <td>
-                                <a href="{{ route('product', $product->slug) }}" target="_blank" class="text-reset">
-                                    {{ $product->getTranslation('name') }}
-                                </a>
+                                <div class="row gutters-5 w-200px w-md-300px mw-100">
+                                    <div class="col-auto">
+                                        <img src="{{ uploaded_asset($product->thumbnail_img)}}" alt="Image" class="size-50px img-fit">
+                                    </div>
+                                    <div class="col">
+                                        <span class="text-muted text-truncate-2">
+                                            {{ $product->name }}
+
+                                            </span>
+                                    </div>
+                                </div>
+
                             </td>
                             <td>
                                 @if ($product->category != null)
-                                    {{ $product->category->getTranslation('name') }}
+                                    {{ $product->category->name }}
                                 @endif
                             </td>
                             <td>
-                                @php
-                                    $qty = 0;
-                                    foreach ($product->stocks as $key => $stock) {
-                                        $qty += $stock->qty;
-                                    }
-                                    echo $qty;
-                                @endphp
-                            </td>
-                            <td>{{ $product->unit_price }}</td>
-                            @if(get_setting('product_approve_by_admin') == 1)
-                                <td>
-                                    @if ($product->approved == 1)
-                                        <span class="badge badge-inline badge-success">{{ translate('Approved')}}</span>
-                                    @else
-                                        <span class="badge badge-inline badge-info">{{ translate('Pending')}}</span>
-                                    @endif
-                                </td>
-                            @endif
-                            <td>
-                                <label class="aiz-switch aiz-switch-success mb-0">
-                                    <input onchange="update_published(this)" value="{{ $product->id }}" type="checkbox" <?php if($product->published == 1) echo "checked";?> >
-                                    <span class="slider round"></span>
-                                </label>
+                                @if ($product->type != null)
+                                    {{ $product->type->name }}
+                                @endif
                             </td>
                             <td>
-                                <label class="aiz-switch aiz-switch-success mb-0">
-                                    <input onchange="update_featured(this)" value="{{ $product->id }}" type="checkbox" <?php if($product->seller_featured == 1) echo "checked";?> >
-                                    <span class="slider round"></span>
-                                </label>
+                                @if ($product->make != null)
+                                    {{ $product->make->name }}
+                                @endif
                             </td>
+
                             <td class="text-right">
+                                <!--
 		                      <a class="btn btn-soft-info btn-icon btn-circle btn-sm" href="{{route('seller.products.edit', ['id'=>$product->id, 'lang'=>env('DEFAULT_LANGUAGE')])}}" title="{{ translate('Edit') }}">
 		                          <i class="las la-edit"></i>
 		                      </a>
+
                               <a href="{{route('products.duplicate', $product->id)}}" class="btn btn-soft-success btn-icon btn-circle btn-sm"  title="{{ translate('Duplicate') }}">
     							   <i class="las la-copy"></i>
     						  </a>
-                              <a href="#" class="btn btn-soft-danger btn-icon btn-circle btn-sm confirm-delete" data-href="{{route('products.destroy', $product->id)}}" title="{{ translate('Delete') }}">
+                            -->
+                              <a href="#" class="btn btn-soft-danger btn-icon btn-circle btn-sm confirm-delete"
+                              data-href="{{route('car.delete', $product->id)}}" title="{{ translate('Delete') }}">
                                   <i class="las la-trash"></i>
                               </a>
+
                           </td>
                         </tr>
                     @endforeach

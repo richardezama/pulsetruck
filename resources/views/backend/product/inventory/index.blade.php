@@ -88,8 +88,7 @@
                         <td>
                             <div class="row gutters-5 w-200px w-md-300px mw-100">
                                 <div class="col-auto">
-                                    <img src="{{ uploaded_asset($product->thumbnail_img)}}" alt="Image" class="size-50px img-fit">
-                                </div>
+                                  </div>
                                 <div class="col">
                                     <span class="text-muted text-truncate-2">
                                         {{ $product->getTranslation('name') }}
