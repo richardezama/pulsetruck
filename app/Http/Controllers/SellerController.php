@@ -253,10 +253,10 @@ class SellerController extends Controller
     public function login($id)
     {
         $seller = Seller::findOrFail(decrypt($id));
-
         $user  = $seller->user;
-
         auth()->login($user, true);
+
+
 
         return redirect()->route('dashboard');
     }

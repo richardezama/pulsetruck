@@ -53,6 +53,7 @@ class ShopController extends Controller
      */
     public function store(Request $request)
     {
+      
         $user = null;
         if (!Auth::check()) {
             if (User::where('email', $request->email)->first() != null) {
@@ -81,8 +82,8 @@ class ShopController extends Controller
 
         $seller = new Seller;
         $seller->user_id = $user->id;
+        $seller->seller_type = $request->seller_type;
         $seller->save();
-
         if (Shop::where('user_id', $user->id)->first() == null) {
             $shop = new Shop;
             $shop->user_id = $user->id;
@@ -92,24 +93,25 @@ class ShopController extends Controller
 
             if ($shop->save()) {
                 auth()->login($user, false);
-                /*if (BusinessSetting::where('type', 'email_verification')->first()->value != 1) {
+                if (BusinessSetting::where('type', 'email_verification')->first()->value != 1) {
                     $user->email_verified_at = date('Y-m-d H:m:s');
                     $user->save();
                 } else {
-                    $user->notify(new EmailVerificationNotification());
-                }*/
+//                    $user->notify(new EmailVerificationNotification());
+                }
 
                 $user->email_verified_at = date('Y-m-d H:m:s');
                 $user->save();
 
                 flash(translate('Your Shop has been created successfully!'))->success();
-                return redirect()->route('shops.index');
+                return redirect()->route('transporters.index');
             } else {
                 $seller->delete();
                 $user->user_type == 'customer';
                 $user->save();
             }
         }
+      
 
         flash(translate('Sorry! Something went wrong.'))->error();
         return back();

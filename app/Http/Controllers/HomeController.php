@@ -18,6 +18,7 @@ use App\Models\Order;
 use App\Models\Types;
 use App\Models\BusinessSetting;
 use App\Models\Coupon;
+use App\Models\Driver;
 use Cookie;
 use Illuminate\Support\Str;
 use App\Mail\SecondEmailVerifyMailManager;
@@ -138,6 +139,19 @@ class HomeController extends Controller
     public function dashboard()
     {
         if(Auth::user()->user_type == 'seller'){
+
+            //do some checks
+
+            $driver=Driver::where("user_id",Auth::user()->id)->first();
+                //drivers
+                if($driver==null)
+                {
+                    
+                        flash(translate('Complete Profile'))->error();
+                        return redirect()->route("driver.completeprofile");
+    
+                }
+                
             return view('frontend.user.seller.dashboard');
         }
         elseif(Auth::user()->user_type == 'customer'){

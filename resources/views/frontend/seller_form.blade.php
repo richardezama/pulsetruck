@@ -13,7 +13,7 @@
                         <a class="text-reset" href="{{ route('home') }}">{{ translate('Home')}}</a>
                     </li>
                     <li class="text-dark fw-600 breadcrumb-item">
-                        <a class="text-reset" href="{{ route('shops.create') }}">"{{ translate('Register your Business')}}"</a>
+                        <a class="text-reset" href="{{ route('transporters.create') }}">"{{ translate('Register your Business')}}"</a>
                     </li>
                 </ul>
             </div>
@@ -24,7 +24,7 @@
     <div class="container">
         <div class="row">
             <div class="col-xxl-5 col-xl-6 col-md-8 mx-auto">
-                <form id="shop" class="" action="{{ route('shops.store') }}"
+                <form  class="" action="{{ route('transporters.store') }}"
                 method="POST" enctype="multipart/form-data">
                     @csrf
                     @if (!Auth::check())
@@ -33,6 +33,16 @@
                                 {{ translate('Personal Info')}}
                             </div>
                             <div class="p-3">
+                                <div class="form-group">
+                                    <label>{{ translate('Business Type')}} <span class="text-primary">
+                                        *</span></label>
+                                   <select class="form-control" name="seller_type">
+                                    <option value="1">Individual</option>
+                                    <option value="2">Company</option>
+
+                                   </select>
+                                </div>
+
                                 <div class="form-group">
                                     <label>{{ translate('Your Name')}} <span class="text-primary">*</span></label>
                                     <input type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" value="{{ old('name') }}" placeholder="{{  translate('Name') }}" name="name">

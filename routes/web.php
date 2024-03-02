@@ -233,6 +233,9 @@ Route::group(['prefix' => 'seller', 'middleware' => ['seller', 'verified', 'user
   //drivers
   Route::resource('drivers', 'DriversController');
   Route::get('/drivers/destroy/{id}', 'DriversController@destroy')->name('driver.destroy');
+  
+  Route::post('driver/complete', 'DriversController@storedriver')->name('drivers.storedriver');
+  Route::get('/completeprofile', 'DriversController@completeprofile')->name('driver.completeprofile');
 
    
 
@@ -342,7 +345,7 @@ Route::group(['middleware' => ['auth']], function() {
     Route::post('/coupon/get_form_edit', 'CouponController@get_coupon_form_edit')->name('coupon.get_coupon_form_edit');
 });
 
-Route::resource('shops', 'ShopController');
+Route::resource('transporters', 'ShopController');
 Route::get('/track-your-order', 'HomeController@trackOrder')->name('orders.track');
 
 Route::get('/instamojo/payment/pay-success', 'InstamojoController@success')->name('instamojo.success');

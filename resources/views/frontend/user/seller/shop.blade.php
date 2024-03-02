@@ -1,24 +1,23 @@
 @extends('frontend.layouts.user_panel')
-
 @section('panel_content')
-
     <div class="aiz-titlebar mt-2 mb-4">
       <div class="row align-items-center">
         <div class="col-md-6">
             <h1 class="h3">{{ translate('Shop Settings')}}
-                <a href="{{ route('shop.visit', $shop->slug) }}" class="btn btn-link btn-sm" target="_blank">({{ translate('Visit Shop')}})<i class="la la-external-link"></i>)</a>
+                <a href="{{ route('shop.visit', $shop->slug) }}"
+                    class="btn btn-link btn-sm"
+                    target="_blank">({{ translate('Visit Shop')}})
+                    <i class="la la-external-link"></i></a>
             </h1>
         </div>
       </div>
     </div>
-
-    {{-- Basic Info --}}
     <div class="card">
         <div class="card-header">
             <h5 class="mb-0 h6">{{ translate('Basic Info') }}</h5>
         </div>
         <div class="card-body">
-            <form class="" action="{{ route('shops.update', $shop->id) }}" method="POST" enctype="multipart/form-data">
+            <form class="" action="{{ route('transporters.update', $shop->id) }}" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="_method" value="PATCH">
                 @csrf
                 <div class="row">
@@ -64,7 +63,7 @@
                             <input type="number" lang="en" min="0" class="form-control mb-3" placeholder="{{ translate('Shipping Cost')}}" name="shipping_cost" value="{{ $shop->shipping_cost }}" required>
                         </div>
                     </div>
-                @endif 
+                @endif
                 <div class="row">
                     <label class="col-md-2 col-form-label">{{ translate('Meta Title') }}<span class="text-danger text-danger">*</span></label>
                     <div class="col-md-10">
@@ -90,7 +89,7 @@
                 <h5 class="mb-0 h6">{{ translate('Delivery Boy Pickup Point') }}</h5>
             </div>
             <div class="card-body">
-                <form class="" action="{{ route('shops.update', $shop->id) }}" method="POST" enctype="multipart/form-data">
+                <form class="" action="{{ route('transporters.update', $shop->id) }}" method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="_method" value="PATCH">
                     @csrf
 
@@ -155,7 +154,7 @@
             <h5 class="mb-0 h6">{{ translate('Banner Settings') }}</h5>
         </div>
         <div class="card-body">
-            <form class="" action="{{ route('shops.update', $shop->id) }}" method="POST" enctype="multipart/form-data">
+            <form class="" action="{{ route('transporters.update', $shop->id) }}" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="_method" value="PATCH">
                 @csrf
 
@@ -188,7 +187,7 @@
             <h5 class="mb-0 h6">{{ translate('Social Media Link') }}</h5>
         </div>
         <div class="card-body">
-            <form class="" action="{{ route('shops.update', $shop->id) }}" method="POST" enctype="multipart/form-data">
+            <form class="" action="{{ route('transporters.update', $shop->id) }}" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="_method" value="PATCH">
                 @csrf
                 <div class="form-box-content p-3">
@@ -240,9 +239,9 @@
 @section('script')
 
     @if (get_setting('google_map') == 1)
-        
+
         @include('frontend.partials.google_map')
-        
+
     @endif
 
 @endsection

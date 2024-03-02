@@ -7,6 +7,7 @@ use App\Models\Staff;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Driver;
+use App\Models\Seller;
 use Hash;
 use Auth;
 
@@ -34,7 +35,37 @@ class DriversController extends Controller
     public function create()
     {
         $roles = Role::all();
+
+        $staffs = User
+        ::where("company_id",Auth::user()->id)->get();
+             $seller=Seller::where("user_id",Auth::user()->id)->first();
+            if($seller!=null)
+            {
+                if($seller->seller_type==1 && sizeof($staffs)>0)
+                {
+                    flash(translate('Only companies can have multiple drivers'))->error();
+                    return back();
+                }
+            }
+            else{
+
+            }
         return view('frontend.user.drivers.create', compact('roles'));
+    }
+
+    
+
+    public function completeprofile()
+    {
+        $roles = Role::all();
+        $driver=Auth::user()->driver;
+        $required="";
+        if($driver==null)
+        {
+            $required="required";
+            $driver=new Driver;
+        }
+        return view('frontend.user.drivers.completeprofile', compact('roles','driver','required'));
     }
 
     /**
@@ -45,6 +76,27 @@ class DriversController extends Controller
      */
     public function store(Request $request)
     {
+
+
+
+        //check user  types
+
+        $staffs = User
+        ::where("company_id",Auth::user()->id)->get();
+            $seller=Seller::where("user_id",Auth::user()->id)->first();
+            if($seller!=null)
+            {
+                if($seller->seller_type==1 && sizeof($staffs)>0)
+                {
+                    flash(translate('Only companies can have multiple drivers'))->error();
+                    return back();
+
+                }
+            }
+            else{
+
+            }
+
         if(User::where('email', $request->email)->first() == null){
             $user = new User;
             $user->name = $request->name;
@@ -73,6 +125,68 @@ class DriversController extends Controller
         }
         flash(translate('Email already used'))->error();
         return back();
+    }
+
+    public function storedriver(Request $request)
+    {
+
+        //check user  types
+        $driver=Auth::user()->driver;
+        if($driver==null)
+        {
+            //fields must be filled
+            if($request->nin_photos)
+            {
+                flash(translate('National ID Photo Missing'))->error();
+                return back();
+            }
+            if($request->photo)
+            {
+                flash(translate('Driver Photo Missing'))->error();
+                return back();
+            }
+            if($request->permit_photos)
+            {
+                flash(translate('Permit Photo Missing'))->error();
+                return back();
+
+            }
+
+            $driver=new Driver;
+            $driver->user_id=Auth::user()->id;
+            $driver->PermitNumber=$request->permit_no;
+            $driver->NIN=$request->nin;
+            $driver->Nationalid_photo = $request->nin_photos;
+            $driver->photo = $request->photo;
+            $driver->Permit_photo = $request->permit_photos;
+            $driver->save();
+            flash(translate('Driver profile completed'))->success();
+            return back();
+        }
+        else{
+            //update
+            $driver->PermitNumber=$request->permit_no;
+            $driver->NIN=$request->nin;
+            if($request->nin_photos)
+            {
+            $driver->Nationalid_photo = $request->nin_photos;
+            }
+            if($request->photo)
+            {
+            $driver->photo = $request->photo;
+            }
+            if($request->permit_photos)
+            {
+            $driver->Permit_photo = $request->permit_photos;
+
+            }
+            $driver->save();
+            flash(translate('Driver profile updated'))->success();
+            return back();
+
+        }
+        
+
     }
 
     /**

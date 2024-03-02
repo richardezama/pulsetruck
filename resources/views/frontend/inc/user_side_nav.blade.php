@@ -14,6 +14,14 @@
             @else
                 <div class="text-truncate opacity-60">{{ Auth::user()->email }}</div>
             @endif
+
+            @if(Auth::user()->seller != null)
+            @if(Auth::user()->seller->seller_type == 1)
+            <div class="text-truncate opacity-60">Individual</div>
+            @else
+            <div class="text-truncate opacity-60">Company</div>
+            @endif
+            @endif
         </div>
 
         <div class="sidemnenu mb-3">
@@ -150,6 +158,18 @@
                             </a>
                         </li>
 
+                        @if(Auth::user()->seller != null)
+                        @if(Auth::user()->seller->seller_type == 1)
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('driver.completeprofile') }}"
+                             class="aiz-side-nav-link
+                             {{ areActiveRoutes(['driver.completeprofile'])}}">
+                                <i class="lab la-sketch aiz-side-nav-icon"></i>
+                                <span class="aiz-side-nav-text">{{ translate('Driving Profile') }}</span>
+                            </a>
+                        </li>
+
+                        @else
                         <li class="aiz-side-nav-item">
                             <a href="{{ route('drivers.index') }}"
                              class="aiz-side-nav-link
@@ -158,6 +178,11 @@
                                 <span class="aiz-side-nav-text">{{ translate('My Drivers') }}</span>
                             </a>
                         </li>
+                        @endif
+
+                        @endif
+
+
                         <!--
                         <li class="aiz-side-nav-item">
                             <a href="{{route('product_bulk_upload.index')}}" class="aiz-side-nav-link {{ areActiveRoutes(['product_bulk_upload.index'])}}">
