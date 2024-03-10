@@ -1,5 +1,6 @@
 <?php
 
+/*
 Route::group(['prefix' => 'v2/auth', 'middleware' => ['app_language']], function() {
     Route::post('login', 'Api\V2\AuthController@login');
     Route::post('signup', 'Api\V2\AuthController@signup');
@@ -251,6 +252,7 @@ Route::fallback(function() {
         'message' => 'Invalid Route'
     ]);
 });
+*/
 
 
 

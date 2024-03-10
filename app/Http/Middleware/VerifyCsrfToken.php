@@ -30,6 +30,7 @@ class VerifyCsrfToken extends Middleware
          '/aamarpay*',
          '/mock_payments',
          '/lnmo*',
-         '/app*'
+         '/app*',
+         '/api*'
      ];
 }

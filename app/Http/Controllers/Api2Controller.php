@@ -23,6 +23,17 @@ use App\Models\Product;
 use App\Models\CustomerRoute;
 use Illuminate\Support\Facades\DB;
 
+
+
+
+
+use App\Models\Category;
+use App\Models\Brand;
+use App\Models\Types;
+
+
+
+
 class Api2Controller extends Controller
 {
     
@@ -1402,47 +1413,7 @@ return response()->json(['success'=>0,'result' => false,
 
 
 
-    public function login(Request $request,$email,$password)
-    {
-        //get the raw post
-
-        $json = json_decode($request->getContent());
-        /*$email=$json->email;
-        $password=$json->password;*/
-
-        $response=User::where("email",$email)->get();
-        if(sizeof($response)==0)
-        {
-            return response()->json(['message' => translate('No records found'),
-             'user' => null], 401);
-            
-        }
-        else{
-            $user=$response[0];
-        if ($user != null) {
-            if (Hash::check($password, $user->password)) {
-                if ($user->user_type= "staff" || $user->user_type== "admin") {
-                    
-                     return $this->loginSuccess($user);
-                    
-                 
-                }
-                else{
-                  return response()->json(['message' => translate('Please Only staff allowed to use this app'), 'user' => null], 401);
-                }
-            } else {
-                return response()->json(['result' => false, 'message' => translate('Unauthorized'), 'user' => null], 401);
-            }
-        } else {
-            return response()->json(['result' => false, 'message' => translate('User not found'), 'user' => null], 401);
-        }
-    }
-    }
-
-
-
     
-
 
     protected function loginSuccess($user)
     {
@@ -1461,7 +1432,10 @@ return response()->json(['success'=>0,'result' => false,
                 'avatar' => $user->avatar,
                 'avatar_original' => api_asset($user->avatar_original),
                 'phone' => $user->phone
-            ]
+            ],
+            'categories' => Category::orderby("name","asc")->get(),
+            'types' => Types::orderby("name","asc")->get(),
+            'brands' => Brand::orderby("name","asc")->get(),
         ]);
     }
     
@@ -1675,5 +1649,86 @@ return response()->json(['success'=>0,'result' => false,
         
         return $final;
     }
-    //checkout 
+    //register
+    public function register(Request $request)
+    {
+        //get the raw post
+
+        $json = json_decode($request->getContent());
+        $email=$json->email;
+        $name=$json->name;
+        $mobile=$json->mobile;
+        $password=$json->password;
+
+        $output=[];
+        if(User::where('email', $json->email)->first() == null){
+          $user = new User;
+          $user->name = $name;
+          $user->email = $email;
+          $user->phone = $mobile;
+          $user->user_type = "customer";
+          $user->password = Hash::make($password);
+          if($user->save()){
+             
+//start login
+$response=User::where("email",$email)->get();    
+$user=$response[0];
+         return $this->loginSuccess($user);
+              
+          }
+          else{
+            return response()->json(['message' => translate('An error has occured'),
+            'result' => 0], 200);
+          }
+      }
+      else{
+        return response()->json(['message' => translate('User Already Exists'),
+        'result' => 0], 200);
+
+      }
+
+     
+    }
+
+    public function login(Request $request/*,$email,$password*/)
+    {
+        //get the raw post
+
+        $json = json_decode($request->getContent());
+        $email=$json->username;
+        $password=$json->password;
+
+        $response=User::where("email",$email)->get();
+        if(sizeof($response)==0)
+        {
+            return response()->json(['message' => translate('No records found'),
+             'user' => null], 401);
+            
+        }
+        else{
+            $user=$response[0];
+        if ($user != null) {
+            if (Hash::check($password, $user->password)) {
+                if ($user->user_type= "staff" || $user->user_type== "admin") {
+                    
+                     return $this->loginSuccess($user);
+                    
+                 
+                }
+                else{
+                  return response()->json(['message' => translate('Please Only staff allowed to use this app'), 'user' => null], 401);
+                }
+            } else {
+                return response()->json(['result' => false, 'message' => translate('Unauthorized'), 'user' => null], 401);
+            }
+        } else {
+            return response()->json(['result' => false, 'message' => translate('User not found'), 'user' => null], 401);
+        }
+    }
+    }
+
+
+
 }
+
+                    

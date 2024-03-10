@@ -25,7 +25,13 @@ Route::get('app/seller/customers/{route}/{search}', 'Api2Controller@getcustomers
 Route::get('app/seller/customer/orders/{customer}/', 'Api2Controller@getcustomerOrders');
 
 //sellers in the field api
-Route::get('app/seller/login/{username}/{password}', 'Api2Controller@login');
+//Route::get('app/seller/login/{username}/{password}', 'Api2Controller@login');
+Route::post('api/v2/login', 'Api2Controller@login');
+
+
+
+
+
 Route::get('app/seller/dashboard/{user_id}', 'Api2Controller@dashboard');
 Route::get('app/seller/addcart/{stock_id}/{quantity}/{user_id}', 'Api2Controller@addcart')->name('seller.addcart');
 Route::get('app/seller/getCart/{user_id}', 'Api2Controller@getCart')->name('seller.getCart');

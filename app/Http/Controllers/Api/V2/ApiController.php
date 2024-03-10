@@ -18,6 +18,14 @@ use App\Models\Payment;
 use App\Models\OrderDetail;
 use App\Models\ProductStock;
 use App\Models\Product;
+
+
+
+use App\Models\Category;
+use App\Models\Brand;
+use App\Models\Types;
+
+
 use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
@@ -484,8 +492,6 @@ class ApiController extends Controller
         $json = json_decode($request->getContent());
         $email=$json->email;
         $password=$json->password;
-
-        
         $response=User::where("email",$email)->get();
         if(sizeof($response)==0)
         {
@@ -532,7 +538,10 @@ class ApiController extends Controller
                 'avatar' => $user->avatar,
                 'avatar_original' => api_asset($user->avatar_original),
                 'phone' => $user->phone
-            ]
+            ],
+            'categories' => Category::orderby("name","asc")->get(),
+            'types' => Types::orderby("name","asc")->get(),
+            'brands' => Branc::orderby("name","asc")->get(),
         ]);
     }
 
